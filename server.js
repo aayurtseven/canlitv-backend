@@ -15,7 +15,7 @@ app.get('/stream/:videoId', (req, res) => {
     const videoId = req.params.videoId;
     console.log('Stream request for:', videoId);
     
-    exec(`yt-dlp -f best --get-url "https://www.youtube.com/watch?v=${videoId}"`, 
+    exec(`python3 -m yt_dlp -f best --get-url "https://www.youtube.com/watch?v=${videoId}"`, 
         (error, stdout, stderr) => {
             if (error) {
                 console.error('yt-dlp error:', error.message);
