@@ -7,13 +7,22 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/ping', (req, res) => {
+    res.json({ status: 'ok', time: new Date().toISOString() });
+});
+
 app.get('/stream/:videoId', (req, res) => {
     const videoId = req.params.videoId;
+    console.log('Stream request for:', videoId);
+    
     exec(`yt-dlp -f best --get-url "https://www.youtube.com/watch?v=${videoId}"`, 
-        (error, stdout) => {
+        (error, stdout, stderr) => {
             if (error) {
-                return res.status(500).json({ error: 'Yayin bulunamadi' });
+                console.error('yt-dlp error:', error.message);
+                console.error('stderr:', stderr);
+                return res.status(500).json({ error: 'Yayin bulunamadi', details: error.message });
             }
+            console.log('Stream URL:', stdout.trim());
             res.json({ streamUrl: stdout.trim() });
         }
     );
